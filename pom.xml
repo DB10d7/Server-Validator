@@ -37,7 +37,30 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.shell/spring-shell-starter -->
 <!--		<dependency>-->
+<!--			<groupId>org.springframework.shell</groupId>-->
+<!--			<artifactId>spring-shell-starter</artifactId>-->
+<!--			<version>2.0.1.RELEASE</version>-->
+<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20140107</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin.external.google</groupId>
+			<artifactId>android-json</artifactId>
+			<version>0.0.20131108.vaadin1</version>
+			<scope>compile</scope>
+		</dependency>
+		<!--		<dependency>-->
 <!--			<groupId>org.springframework.shell</groupId>-->
 <!--			<artifactId>spring-shell-starter</artifactId>-->
 <!--			<version>2.0.1.RELEASE</version>-->
