@@ -31,8 +31,8 @@ public class FileService {
     @Value("${file.deploy.location}")
     private String deployPath;
 
-    public static HashSet<String> filenames = new HashSet<>();
-    public static HashSet<String> jspFilenames = new HashSet<>();
+    public  HashSet<String> filenames = new HashSet<>();
+    public  HashSet<String> jspFilenames = new HashSet<>();
     public  HashMap<String,HashSet<String>> map = new HashMap<>();
 
     @PostConstruct
@@ -40,6 +40,7 @@ public class FileService {
         try {
 
             Files.createDirectories(Paths.get(deployPath));
+            System.out.println("hello form init");
         } catch (IOException e) {
             throw new RuntimeException("Could not create upload folder!");
         }
@@ -102,11 +103,18 @@ public class FileService {
                 scanClass(f);
             }
         }
-
-        map.put("servlets",filenames);
-        map.put("jsp",jspFilenames);
-//        filenames.clear();
-//        jspFilenames.clear();
+        HashSet<String> names = new HashSet<>();
+        for(String s : filenames){
+            names.add(s);
+        }
+        HashSet<String> jspnames = new HashSet<>();
+        for(String s: jspFilenames){
+            jspnames.add(s);
+        }
+        map.put("servlets",names);
+        map.put("jsp",jspnames);
+        this.filenames.clear();
+        this.jspFilenames.clear();
 //        return map;
     }
     public void scanDirectory(File f){
@@ -180,54 +188,109 @@ public class FileService {
 
         String extract = "\"cmd.exe\", \"/c\", \"cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -xvf "+ fileName;
         System.out.println(extract);
-        ProcessBuilder builder = new ProcessBuilder(
-                "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\" && jar -xvf "+ fileName);
+        String xvt = "\"sh\", \"-c\", \"ls\"";
+        boolean isWindows = System.getProperty("os.name")
+                .toLowerCase().startsWith("windows");
+        if(isWindows){
+            ProcessBuilder builder = new ProcessBuilder(
+                    "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\" && jar -xvf "+ fileName);
 
 //        ProcessBuilder builder = new ProcessBuilder(
 //                "cmd.exe", "/c", "cd \""+ deployPath + "\""+fileName+" && jar -xvf "+ fileName);
 
-        builder.redirectErrorStream(true);
-        Process p = builder.start();
+            builder.redirectErrorStream(true);
+            Process p = builder.start();
 
-        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        while (true) {
-            line = r.readLine();
-            if (line == null) { break; }
-            System.out.println(line);
-        }
+            BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while (true) {
+                line = r.readLine();
+                if (line == null) { break; }
+                System.out.println(line);
+            }
 
-        p.destroyForcibly();
-        System.out.println(p.isAlive());
+            p.destroyForcibly();
+            System.out.println(p.isAlive());
 
 //        putValidator();
-        long start = System.currentTimeMillis();
-        long end = start + 3*1000;
-        while (System.currentTimeMillis() < end) {
-            // Some expensive operation on the item.
-        }
-        String pack = "\"cmd.exe\", \"/c\", \"cd \\\"C:\\\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -cvf verified"+ fileName+" *";
-        System.out.println(pack);
-        ProcessBuilder builder1 = new ProcessBuilder(
-                "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+fileName+"\" && jar -cvf verified"+ fileName +" *");
+            long start = System.currentTimeMillis();
+            long end = start + 3*1000;
+            while (System.currentTimeMillis() < end) {
+                // Some expensive operation on the item.
+            }
+            String pack = "\"cmd.exe\", \"/c\", \"cd \\\"C:\\\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -cvf verified"+ fileName+" *";
+            System.out.println(pack);
+            ProcessBuilder builder1 = new ProcessBuilder(
+                    "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+fileName+"\" && jar -cvf verified"+ fileName +" *");
 
 
 //        ProcessBuilder builder1 = new ProcessBuilder(
 //                "cmd.exe", "/c","cd \""+ deployPath + "\""+fileName+" && jar -cvf verified"+ fileName +" *");
 
-        builder1.redirectErrorStream(true);
-        Process p1 = builder1.start();
-        System.out.println(p1.isAlive());
+            builder1.redirectErrorStream(true);
+            Process p1 = builder1.start();
+            System.out.println(p1.isAlive());
 
-        BufferedReader r1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
-        String line1;
-        while (true) {
-            line1 = r1.readLine();
-            if (line1 == null) { break; }
-            System.out.println(line1);
+            BufferedReader r1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+            String line1;
+            while (true) {
+                line1 = r1.readLine();
+                if (line1 == null) { break; }
+                System.out.println(line1);
+            }
+            p1.destroyForcibly();
+            System.out.println(p1.isAlive());
+        }else{
+            ProcessBuilder builder = new ProcessBuilder(
+                    "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\" && jar -xvf "+ fileName);
+
+//        ProcessBuilder builder = new ProcessBuilder(
+//                "cmd.exe", "/c", "cd \""+ deployPath + "\""+fileName+" && jar -xvf "+ fileName);
+
+            builder.redirectErrorStream(true);
+            Process p = builder.start();
+
+            BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while (true) {
+                line = r.readLine();
+                if (line == null) { break; }
+                System.out.println(line);
+            }
+
+            p.destroyForcibly();
+            System.out.println(p.isAlive());
+
+//        putValidator();
+            long start = System.currentTimeMillis();
+            long end = start + 3*1000;
+            while (System.currentTimeMillis() < end) {
+                // Some expensive operation on the item.
+            }
+            String pack = "\"cmd.exe\", \"/c\", \"cd \\\"C:\\\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -cvf verified"+ fileName+" *";
+            System.out.println(pack);
+            ProcessBuilder builder1 = new ProcessBuilder(
+                    "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+fileName+"\" && jar -cvf verified"+ fileName +" *");
+
+
+//        ProcessBuilder builder1 = new ProcessBuilder(
+//                "cmd.exe", "/c","cd \""+ deployPath + "\""+fileName+" && jar -cvf verified"+ fileName +" *");
+
+            builder1.redirectErrorStream(true);
+            Process p1 = builder1.start();
+            System.out.println(p1.isAlive());
+
+            BufferedReader r1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+            String line1;
+            while (true) {
+                line1 = r1.readLine();
+                if (line1 == null) { break; }
+                System.out.println(line1);
+            }
+            p1.destroyForcibly();
+            System.out.println(p1.isAlive());
         }
-        p1.destroyForcibly();
-        System.out.println(p1.isAlive());
+
 
     }
 
