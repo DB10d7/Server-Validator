@@ -51,7 +51,7 @@ public class ViewController {
 //            return "File Not Uploaded";
             HashMap<String,HashSet<String>> errMap = new HashMap<>();
             HashSet<String> errMessage = new HashSet<>();
-            errMessage.add("File Not Uploaded!");
+            errMessage.add(e.getMessage());
             errMap.put("error",errMessage);
             return errMap;
 //
@@ -65,10 +65,10 @@ public class ViewController {
 
 
 
-    @GetMapping("/copy")
-    public void copyValidator() {
-        fileService.putValidator();
-    }
+//    @GetMapping("/copy")
+//    public void copyValidator() {
+//        fileService.putValidator();
+//    }
 
     @GetMapping("/getData")
     public ResponseEntity<String> getData() {

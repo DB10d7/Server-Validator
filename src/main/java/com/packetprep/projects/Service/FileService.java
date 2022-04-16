@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.apache.commons.io.FileUtils;
+
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
@@ -51,7 +53,25 @@ public class FileService {
             String fname = file.getOriginalFilename();
 
 
+
+            File webappFile = new File(uploadPath+"/"+fname);
+            if(webappFile.exists()){
+
+                webappFile.delete();
+            }
+            Path webapp = Paths.get(uploadPath);
+            if (!Files.exists(webapp)) {
+                init();
+
+            }
+            Files.copy(file.getInputStream(), webapp.resolve(file.getOriginalFilename()));
+
+
             File theDir = new File(deployPath+"/"+fname);
+            if(theDir.exists()){
+                FileUtils.deleteDirectory(theDir);
+                theDir.delete();
+            }
             if (!theDir.exists()){
                 theDir.mkdirs();
             }
@@ -64,6 +84,7 @@ public class FileService {
             }
             Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
 
+
             display(file.getOriginalFilename());
             scan(fname);
             return map;
@@ -73,24 +94,7 @@ public class FileService {
 
         }
     }
-    public void putValidator(){
-        try{
-            String name="hello";
-            File source = new File(validatorPath);
 
-            for(File f : source.listFiles()){
-                if(f.listFiles() != null){
-                    File dest = new File(deployPath + "\\WEB-INF\\classes\\com");
-                    FileUtils.copyDirectory(source, dest);
-                }else{
-                    File dest = new File(deployPath);
-                    FileUtils.copyFileToDirectory(f, dest);
-                }
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }
     public void scan(String fname){
 
 //        File actual = new File(deployPath + "\\WEB-INF\\classes\\com");
@@ -186,9 +190,9 @@ public class FileService {
 
     public void display(String fileName) throws Exception {
 
-        String extract = "\"cmd.exe\", \"/c\", \"cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -xvf "+ fileName;
-        System.out.println(extract);
-        String xvt = "\"sh\", \"-c\", \"ls\"";
+//        String extract = "\"cmd.exe\", \"/c\", \"cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -xvf "+ fileName;
+//        System.out.println(extract);
+//        String xvt = "\"sh\", \"-c\", \"ls\"";
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
         if(isWindows){
@@ -242,7 +246,7 @@ public class FileService {
             System.out.println(p1.isAlive());
         }else{
             ProcessBuilder builder = new ProcessBuilder(
-                    "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\" && jar -xvf "+ fileName);
+                    "sh", "-c", "cd \"var\\lib\\warFileStorage"+ fileName+"\" && jar -xvf "+ fileName);
 
 //        ProcessBuilder builder = new ProcessBuilder(
 //                "cmd.exe", "/c", "cd \""+ deployPath + "\""+fileName+" && jar -xvf "+ fileName);
@@ -262,33 +266,33 @@ public class FileService {
             System.out.println(p.isAlive());
 
 //        putValidator();
-            long start = System.currentTimeMillis();
-            long end = start + 3*1000;
-            while (System.currentTimeMillis() < end) {
-                // Some expensive operation on the item.
-            }
-            String pack = "\"cmd.exe\", \"/c\", \"cd \\\"C:\\\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -cvf verified"+ fileName+" *";
-            System.out.println(pack);
-            ProcessBuilder builder1 = new ProcessBuilder(
-                    "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+fileName+"\" && jar -cvf verified"+ fileName +" *");
-
-
+//            long start = System.currentTimeMillis();
+//            long end = start + 3*1000;
+//            while (System.currentTimeMillis() < end) {
+//                // Some expensive operation on the item.
+//            }
+//            String pack = "\"cmd.exe\", \"/c\", \"cd \\\"C:\\\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -cvf verified"+ fileName+" *";
+//            System.out.println(pack);
+//            ProcessBuilder builder1 = new ProcessBuilder(
+//                    "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+fileName+"\" && jar -cvf verified"+ fileName +" *");
+//
+//
 //        ProcessBuilder builder1 = new ProcessBuilder(
 //                "cmd.exe", "/c","cd \""+ deployPath + "\""+fileName+" && jar -cvf verified"+ fileName +" *");
-
-            builder1.redirectErrorStream(true);
-            Process p1 = builder1.start();
-            System.out.println(p1.isAlive());
-
-            BufferedReader r1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
-            String line1;
-            while (true) {
-                line1 = r1.readLine();
-                if (line1 == null) { break; }
-                System.out.println(line1);
-            }
-            p1.destroyForcibly();
-            System.out.println(p1.isAlive());
+//
+//            builder1.redirectErrorStream(true);
+//            Process p1 = builder1.start();
+//            System.out.println(p1.isAlive());
+//
+//            BufferedReader r1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+//            String line1;
+//            while (true) {
+//                line1 = r1.readLine();
+//                if (line1 == null) { break; }
+//                System.out.println(line1);
+//            }
+//            p1.destroyForcibly();
+//            System.out.println(p1.isAlive());
         }
 
 
