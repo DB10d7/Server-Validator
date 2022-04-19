@@ -49,6 +49,7 @@ public class FileService {
     }
 
     public HashMap<String,HashSet<String>> save(MultipartFile file) {
+
         try {
             String fname = file.getOriginalFilename();
 
@@ -67,38 +68,46 @@ public class FileService {
             Files.copy(file.getInputStream(), webapp.resolve(file.getOriginalFilename()));
 
 
-            File theDir = new File(deployPath+"/"+fname);
-            if(theDir.exists()){
-                FileUtils.deleteDirectory(theDir);
-                theDir.delete();
-            }
-            if (!theDir.exists()){
-                theDir.mkdirs();
-            }
+//            File theDir = new File(deployPath+"/"+fname);
+//            if(theDir.exists()){
+//                FileUtils.deleteDirectory(theDir);
+//                theDir.delete();
+//            }
+//            if (!theDir.exists()){
+//                theDir.mkdir();
+//            }
+//
+//            int index = fname.indexOf('.');
+//            Path root = Paths.get(deployPath+"/"+fname);
+//            if (!Files.exists(root)) {
+//                init();
+//
+//            }
+//            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
 
+
+//            display(file.getOriginalFilename());
             int index = fname.indexOf('.');
-            Path root = Paths.get(deployPath+"/"+fname);
-            if (!Files.exists(root)) {
-                init();
-
+            String fileName = fname.substring(0,index);
+            long start = System.currentTimeMillis();
+            long end = start + 8*1000;
+            while (System.currentTimeMillis() < end) {
+                // Some expensive operation on the item.
             }
-            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
-
-
-            display(file.getOriginalFilename());
-            scan(fname);
+            scan(fileName);
             return map;
 
         } catch (Exception e) {
-            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+            throw new RuntimeException("Could not store the file. Error: " + e);
+
 
         }
     }
 
     public void scan(String fname){
 
-//        File actual = new File(deployPath + "\\WEB-INF\\classes\\com");
-        File actual = new File(deployPath+"/"+fname);
+
+        File actual = new File(uploadPath+"/"+fname);
         for( File f : actual.listFiles()){
 
             if(f.listFiles() != null){
@@ -152,32 +161,14 @@ public class FileService {
                 String first= name.substring(0,j);
 
                 if(last.equalsIgnoreCase(".java")){
-//                    System.out.println(first);
+
                     filenames.add(first);
-//                    BufferedReader br
-//                            = new BufferedReader(new FileReader(f));
-//
-//                    String st;
-//                    // Condition holds true till
-//                    // there is character in a string
-//                    while ((st = br.readLine()) != null)
-//
-//                        // Print the string
-//                        System.out.println(st);
+
 
                 }else if(last.equalsIgnoreCase(".jsp")){
-//                    System.out.println(first);
+
                     jspFilenames.add(first);
-//                    BufferedReader br
-//                            = new BufferedReader(new FileReader(f));
-//
-//                    String st;
-//                    // Condition holds true till
-//                    // there is character in a string
-//                    while ((st = br.readLine()) != null)
-//
-//                        // Print the string
-//                        System.out.println(st);
+
 
                 }
             }
@@ -190,17 +181,14 @@ public class FileService {
 
     public void display(String fileName) throws Exception {
 
-//        String extract = "\"cmd.exe\", \"/c\", \"cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -xvf "+ fileName;
-//        System.out.println(extract);
-//        String xvt = "\"sh\", \"-c\", \"ls\"";
+
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
         if(isWindows){
             ProcessBuilder builder = new ProcessBuilder(
                     "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\" && jar -xvf "+ fileName);
 
-//        ProcessBuilder builder = new ProcessBuilder(
-//                "cmd.exe", "/c", "cd \""+ deployPath + "\""+fileName+" && jar -xvf "+ fileName);
+
 
             builder.redirectErrorStream(true);
             Process p = builder.start();
@@ -216,7 +204,7 @@ public class FileService {
             p.destroyForcibly();
             System.out.println(p.isAlive());
 
-//        putValidator();
+
             long start = System.currentTimeMillis();
             long end = start + 3*1000;
             while (System.currentTimeMillis() < end) {
@@ -228,8 +216,7 @@ public class FileService {
                     "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+fileName+"\" && jar -cvf verified"+ fileName +" *");
 
 
-//        ProcessBuilder builder1 = new ProcessBuilder(
-//                "cmd.exe", "/c","cd \""+ deployPath + "\""+fileName+" && jar -cvf verified"+ fileName +" *");
+
 
             builder1.redirectErrorStream(true);
             Process p1 = builder1.start();
@@ -248,8 +235,7 @@ public class FileService {
             ProcessBuilder builder = new ProcessBuilder(
                     "sh", "-c", "cd \"var\\lib\\warFileStorage"+ fileName+"\" && jar -xvf "+ fileName);
 
-//        ProcessBuilder builder = new ProcessBuilder(
-//                "cmd.exe", "/c", "cd \""+ deployPath + "\""+fileName+" && jar -xvf "+ fileName);
+
 
             builder.redirectErrorStream(true);
             Process p = builder.start();
@@ -265,34 +251,7 @@ public class FileService {
             p.destroyForcibly();
             System.out.println(p.isAlive());
 
-//        putValidator();
-//            long start = System.currentTimeMillis();
-//            long end = start + 3*1000;
-//            while (System.currentTimeMillis() < end) {
-//                // Some expensive operation on the item.
-//            }
-//            String pack = "\"cmd.exe\", \"/c\", \"cd \\\"C:\\\\Users\\Packetprep\\Desktop\\Deploy\\"+ fileName+"\\ && jar -cvf verified"+ fileName+" *";
-//            System.out.println(pack);
-//            ProcessBuilder builder1 = new ProcessBuilder(
-//                    "cmd.exe", "/c", "cd \"C:\\Users\\Packetprep\\Desktop\\Deploy\\"+fileName+"\" && jar -cvf verified"+ fileName +" *");
-//
-//
-//        ProcessBuilder builder1 = new ProcessBuilder(
-//                "cmd.exe", "/c","cd \""+ deployPath + "\""+fileName+" && jar -cvf verified"+ fileName +" *");
-//
-//            builder1.redirectErrorStream(true);
-//            Process p1 = builder1.start();
-//            System.out.println(p1.isAlive());
-//
-//            BufferedReader r1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
-//            String line1;
-//            while (true) {
-//                line1 = r1.readLine();
-//                if (line1 == null) { break; }
-//                System.out.println(line1);
-//            }
-//            p1.destroyForcibly();
-//            System.out.println(p1.isAlive());
+
         }
 
 
