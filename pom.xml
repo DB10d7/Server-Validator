@@ -37,18 +37,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--		common-io-->
+		<!--		common-io-->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.5</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.shell/spring-shell-starter -->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.shell</groupId>-->
-<!--			<artifactId>spring-shell-starter</artifactId>-->
-<!--			<version>2.0.1.RELEASE</version>-->
-<!--		</dependency>-->
+
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
 			<groupId>org.json</groupId>

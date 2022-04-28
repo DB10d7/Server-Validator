@@ -9,9 +9,11 @@ import org.apache.commons.io.FileUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,33 +43,70 @@ public class FileService {
     public void init() {
         try {
 
-            Files.createDirectories(Paths.get(deployPath));
+            Files.createDirectories(Paths.get(uploadPath));
             System.out.println("hello form init");
         } catch (IOException e) {
             throw new RuntimeException("Could not create upload folder!");
         }
     }
 
-    public HashMap<String,HashSet<String>> save(MultipartFile file) {
+    public HashMap<String,HashSet<String>> save(String fname) {
 
         try {
-            String fname = file.getOriginalFilename();
-
-
-
-            File webappFile = new File(uploadPath+"/"+fname);
-            if(webappFile.exists()){
-
-                webappFile.delete();
-            }
+//            String fname = file.getOriginalFilename();
+//
+//
+//
+//            File webappFile = new File(uploadPath+"/"+fname);
+//            if(webappFile.exists()){
+//
+//                webappFile.delete();
+//            }
+//            Path webapp = Paths.get(uploadPath);
+//            if (!Files.exists(webapp)) {
+//                init();
+//
+//            }
+//            Files.copy(file.getInputStream(), webapp.resolve(file.getOriginalFilename()));
+            String url = "https://s3-xplore.s3.ap-south-1.amazonaws.com/zip_practice/"+fname;
+            BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+//            File webappFile = new File(uploadPath+"/"+fname);
+//            if(webappFile.exists()){
+//
+//                webappFile.delete();
+//            }
             Path webapp = Paths.get(uploadPath);
-            if (!Files.exists(webapp)) {
-                init();
-
-            }
-            Files.copy(file.getInputStream(), webapp.resolve(file.getOriginalFilename()));
-
-
+//            if (!Files.exists(webapp)) {
+//                init();
+//
+//            }
+            Files.copy(in, webapp.resolve(fname));
+//            String url = "https://s3-xplore.s3.ap-south-1.amazonaws.com/zip_practice/"+fname;
+//            System.out.println(url);
+//            URL url2 = new URL(url);
+////       File file = new File(https://s3-xplore.s3.ap-south-1.amazonaws.com/zip_practice/KrskyJZ7k9_krishnateja.war)
+////        int i = url.lastIndexOf('/');
+////        String fileName = url.substring(i+1);
+////            FileUtils.copyURLToFile(url2, new File(uploadPath+"/"+fname));
+//            File fil = new File(uploadPath+"/"+fname);
+//            BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+////            try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+////                 FileOutputStream fileOutputStream = new FileOutputStream(fil)) {
+////                byte dataBuffer[] = new byte[1024];
+////                int bytesRead;
+////                while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+////                    fileOutputStream.write(dataBuffer, 0, bytesRead);
+////                }
+//                Path webapp = Paths.get(uploadPath+"/"+fname);
+////            if (!Files.exists(webapp)) {
+////                init();
+////
+////            }
+////            Files.copy(in, webapp.resolve(fname));
+//                Files.copy(in, webapp, StandardCopyOption.REPLACE_EXISTING);
+//            } catch (IOException e) {
+//                // handle exception
+//            }
 //            File theDir = new File(deployPath+"/"+fname);
 //            if(theDir.exists()){
 //                FileUtils.deleteDirectory(theDir);
@@ -90,7 +129,7 @@ public class FileService {
             int index = fname.indexOf('.');
             String fileName = fname.substring(0,index);
             long start = System.currentTimeMillis();
-            long end = start + 8*1000;
+            long end = start + 15*1000;
             while (System.currentTimeMillis() < end) {
                 // Some expensive operation on the item.
             }
@@ -102,6 +141,15 @@ public class FileService {
 
 
         }
+    }
+    public void downloadFile(String fileName) throws IOException {
+       String url = "https://s3-xplore.s3.ap-south-1.amazonaws.com/zip_practice/"+fileName;
+       System.out.println(url);
+        URL url2 = new URL(url);
+//       File file = new File(https://s3-xplore.s3.ap-south-1.amazonaws.com/zip_practice/KrskyJZ7k9_krishnateja.war)
+//        int i = url.lastIndexOf('/');
+//        String fileName = url.substring(i+1);
+        FileUtils.copyURLToFile(url2, new File(deployPath+"/"+fileName));
     }
 
     public void scan(String fname){

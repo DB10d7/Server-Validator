@@ -4,10 +4,7 @@ import com.packetprep.projects.Service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,11 +28,11 @@ public class ViewController {
         return "index";
     }
 
-    @PostMapping("/uploadFile")
-    public HashMap<String, HashSet<String>> uploadFile(@RequestParam("myFile") MultipartFile myFile) throws IOException {
+    @GetMapping("/uploadFile/{fileName}")
+    public HashMap<String, HashSet<String>> uploadFile(@PathVariable String fileName) throws IOException {
         try{
 //          return fileService.save(myFile);
-            return fileService.save(myFile);
+            return fileService.save(fileName);
 
 
 //            String fileName = myFile.getOriginalFilename();
@@ -53,7 +50,11 @@ public class ViewController {
         }
 
     }
-
+    @PostMapping("/download/{fileName}")
+    public String downloadFile(@PathVariable String fileName) throws IOException {
+        fileService.downloadFile(fileName);
+        return "downloaded";
+    }
 
     @GetMapping("/getData")
     public ResponseEntity<String> getData() {
