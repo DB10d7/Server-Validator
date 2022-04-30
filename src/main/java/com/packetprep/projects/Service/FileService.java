@@ -7,6 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.FileUtils;
 
+import java.io.IOException;
+import java.nio.file.*;
+
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.URL;
@@ -80,7 +83,7 @@ public class FileService {
 //                init();
 //
 //            }
-            Files.copy(in, webapp.resolve(fname));
+            Files.copy(in, webapp.resolve(fname),StandardCopyOption.REPLACE_EXISTING);
 //            String url = "https://s3-xplore.s3.ap-south-1.amazonaws.com/zip_practice/"+fname;
 //            System.out.println(url);
 //            URL url2 = new URL(url);
@@ -142,6 +145,26 @@ public class FileService {
 
         }
     }
+
+    public String deleteFile(String fname){
+        try {
+            Files.deleteIfExists(
+                    Paths.get(uploadPath+"/"+fname));
+        }
+        catch (NoSuchFileException e) {
+
+                 return   "No such file/directory exists";
+        }
+        catch (DirectoryNotEmptyException e) {
+            return "Directory is not empty.";
+        }
+        catch (IOException e) {
+             return "Invalid permissions.";
+        }
+
+        return "Deletion successful.";
+    }
+
     public void downloadFile(String fileName) throws IOException {
        String url = "https://s3-xplore.s3.ap-south-1.amazonaws.com/zip_practice/"+fileName;
        System.out.println(url);

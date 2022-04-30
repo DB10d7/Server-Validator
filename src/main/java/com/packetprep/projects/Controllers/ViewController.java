@@ -50,10 +50,10 @@ public class ViewController {
         }
 
     }
-    @PostMapping("/download/{fileName}")
-    public String downloadFile(@PathVariable String fileName) throws IOException {
-        fileService.downloadFile(fileName);
-        return "downloaded";
+    @GetMapping("/delete/{fileName}")
+    public String deleteFile(@PathVariable String fileName) throws IOException {
+        return  fileService.deleteFile(fileName);
+
     }
 
     @GetMapping("/getData")
